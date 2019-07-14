@@ -1,0 +1,1176 @@
+% !TeX spellcheck = it_IT
+\documentclass{beamer}
+\usepackage[]{graphicx}
+\usepackage[]{color}
+
+\usetheme{CambridgeUS}
+\usecolortheme{seahorse}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%  versione per stampa
+%\documentclass[handout]{beamer}
+\usepackage{pgfpages}
+%\pgfpagesuselayout{8 on 1}[a4paper,border shrink=5mm,portrait]
+%\usetheme{Pittsburgh}
+%\usecolortheme{dove}
+
+%\usecolortheme[RGB={60,165,222}]{structure} 
+\usecolortheme[RGB={4,82,196}]{structure} 
+\useoutertheme{modificatema}
+
+%\setbeamercolor*{title}{fg=white,bg=gray!30!black}
+\setbeamercolor*{frametitle}{parent=palette primary}
+
+\setbeameroption{hide notes}
+
+\usepackage{animate}
+\usepackage[latin1]{inputenc}
+\usepackage{epsfig}
+\usepackage{boxedminipage}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{verbatim}
+%\usepackage{amssymb}
+\usepackage{eepic}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage[italian]{babel}
+\setlength{\parindent}{0pt}
+%\addtolength{\oddsidemargin}{-2cm}
+%\addtolength{\evensidemargin}{-1cm}
+%\addtolength{\textwidth}{3cm}
+%\addtolength{\topmargin}{-5mm}
+%\addtolength{\voffset}{-1cm}
+%\addtolength{\textheight}{45mm}
+\newcommand{\cov}{\ensuremath{\text{cov}}}
+\newcommand{\var}{\ensuremath{\text{var}}}
+
+\newcommand{\spa}{\vspace{3mm}\centerline{ *\hspace{1cm}*\hspace{1cm}*}\vspace{0.5cm}}
+
+\newcommand{\tstim}{\ensuremath{\hat{\theta}}}
+\newcommand{\tvero}{\ensuremath{\theta_0}}
+\newcommand{\epsi}{\ensuremath{\varepsilon}}
+
+\newcommand{\corr}[1]{{\textcolor{red}{#1}} }
+
+\newcommand{\spaziobianco}{\vspace{2mm}}
+\newcommand{\spazio}{\noindent\makebox[\linewidth]{\resizebox{0.1\linewidth}{1pt}{{$\bullet$}}}}
+
+\newcommand{\thicksimH}{\overset{H_0}{\thicksim}}
+\newcommand{\thicksimind}{\overset{\text{{\tiny IND}}}{\thicksim}}
+
+\newcommand{\espon}[1]{\exp\left\{#1\right\}}
+
+\newcommand{\N}[2]{\ensuremath{\mathcal N\left(#1,#2\right)}}
+\newcommand{\Nbiv}[5]{\ensuremath{\mathcal N\left(\left[\begin{matrix}#1 \\ #2\end{matrix}\right],\left[\begin{matrix}#3 & #5 \\ #5 & #4\end{matrix}\right]\right)}}
+\newcommand{\eps}{\ensuremath{\varepsilon}}
+
+\setbeamercolor{verdescuro}{fg=structure!50!black,bg=white}
+\setbeamercolor{titolo}{fg=white,bg=structure!50!black}
+\setbeamercolor{corpo}{fg=black,bg=gray!20!white}
+
+
+\usepackage{bm}
+
+\newcommand{\vbeta}{\bm{\beta}}
+\newcommand{\vb}{\bm{b}}
+\newcommand{\vf}{\bm{f}}
+\newcommand{\vu}{\bm{u}}
+\newcommand{\vy}{\bm{y}}
+\newcommand{\vx}{\bm{x}}
+\newcommand{\veps}{\bm{\varepsilon}}
+\definecolor{light-gray}{gray}{0.95}
+
+\setbeamercolor{evidenzia}{fg=black,bg=yellow!20!white}
+
+
+\setbeamertemplate{frametitle continuation}[from second][{\small}]
+\beamertemplatenavigationsymbolsempty
+\newenvironment{scatola}[1]{%
+\begin{center}~%
+\begin{beamerboxesrounded}[upper=titolo,lower=corpo,shadow=true,width=0.7\textwidth]{#1}}%
+{%
+\end{beamerboxesrounded}~%
+\end{center}}
+
+\newenvironment{scatolone}[1]{%
+\begin{center}~%
+\begin{beamerboxesrounded}[upper=titolo,lower=corpo,shadow=true,width=0.95\textwidth]{#1}}%
+{%
+\end{beamerboxesrounded}~%
+\end{center}}
+
+%\newenvironment{definizione}%
+%{\vspace{3mm}{DEFINIZIONE,}\begin{it}}%
+%{\end{it}\vspace{3mm}}
+
+\newenvironment{definizione}%
+{\vspace{3mm}\begin{scatola}{Definizione}}%
+{\end{scatola}\vspace{3mm}}
+
+\newenvironment{teorema}%
+{\vspace{3mm}\begin{scatola}{Teorema}}%
+{\end{scatola}\vspace{3mm}}
+
+\newenvironment{proprieta}%
+{\vspace{3mm}\begin{scatola}{Propriet\`a}}%
+{\end{scatola}\vspace{3mm}}
+
+
+%\newcounter{nteo}
+%\newenvironment{teorema}%
+%{\vspace{3mm}{TEOREMA,}\begin{it}}%
+%{\end{it}\vspace{3mm}}
+
+%%\newcounter{nprop}
+%\newenvironment{proprieta}%
+%{\vspace{3mm}{PROPRIET\`A,}\begin{it}}%
+%{\end{it}\vspace{3mm}}
+
+\usepackage{bm}
+
+\newcounter{nlucido}
+
+%\author[ Trieste, 7 marzo 2012, lucido \thenlucido]{FP AS SZ}
+
+\title[Regressione semiparametrica]{5. Regressione semiparametrica}
+
+\author[F. Pauli]{Francesco Pauli}
+
+
+\institute{DEAMS \\ Universit\`a di Trieste}
+
+\date{A.A. 2017/2018}
+
+\AtBeginSection[] % Do nothing for \section*
+{
+\begin{frame}
+\frametitle{Indice}
+\tableofcontents[currentsection,hideallsubsections]
+%\tableofcontents[currentsection]
+\end{frame}
+}
+\AtBeginSubsection[] % Do nothing for \section*
+{
+\begin{frame}<beamer>
+\frametitle{Indice}
+\tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded/hide]
+%\tableofcontents[currentsection,currentsubsection]
+\end{frame}
+}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\usepackage{Sweave}
+\begin{document}
+\input{lucidi5-concordance}
+
+%\input{richiami}
+
+
+
+
+\maketitle
+%\input{traccia}
+
+
+
+\begin{frame}{Modelli parametrici, semiparametrici, non parametrici}
+Si ha un modello parametrico quando la famiglia di distribuzioni all'-interno della quale cerchiamo una distribuzione che descriva i dati \`e indicizzata da un parametro $\theta\in\mathbb R^d$, \textbf{con $d$ non troppo grande e fisso}.
+
+\spazio
+
+Muoversi verso i metodi semiparametrici o non parametrici significa
+\begin{itemize}
+\item ridurre le assunzioni
+\item aumentare il numero di parametri e, in qualche senso, stimarlo
+\end{itemize}
+(non c'\`e una separazione netta).
+
+\spazio
+
+\onslide*<1>{
+Esempio: stima della distribuzione di $X_1,\ldots,X_n\thicksim F()$
+\begin{itemize}
+\item parametrica: si assume $F\in\mathcal F=\{F_\theta():\theta\in\mathbb R^d\}$, si stima $\theta$ (ad es. SMV),  $F_{\hat{\theta}}$ \`e la stima di $F$.
+\item non parametrica: si assume $F$ sia una FdR: una buona stima \`e la {\bf FdR empirica}.
+\end{itemize}
+}
+\onslide*<2>{
+Esempio: stima della funzione di regressione $E(Y|X=x)$ da un campione $(x_i,Y_i)$, $i=1,\ldots,n$
+\begin{itemize}
+\item parametrica: si assume $E(Y|X=x)=\beta_1+\beta_2x$, si stima $\theta=(\beta_1,\beta_2)$.
+\item non parametrica: si assume $E(Y|X=x)=f(x)$  dove $f$ appartiene a una classe di funzioni sufficientemente flessibile (non ci sono parametri di interesse diretto).
+\end{itemize}
+}
+
+\end{frame}
+
+
+\begin{frame}[t]{Regressione non parametrica}
+Si assume che
+\[ E(Y|X= x) = f(x);\;\;\; V(Y|X=x)=\sigma^2   \]
+dove $f$ \`e una funzione ``regolare'' (continua con qualche derivata continua).
+
+\spazio
+
+Due approcci
+\begin{itemize}
+\item tecniche ``locali''%
+\onslide*<1>{%
+\begin{itemize}
+\item se avessimo tante osservazioni per ciascun $x_0$ potremmo stimare $f(x_0)$ come una media campionaria.
+\item in generale, avendo un'osservazione per ciascun $x$ potremmo usare le osservazioni vicine.
+\end{itemize}
+}%
+\onslide*<2->{: stima $E(Y|X=x_0)$ usando punti vicini a $x_0$.}
+\onslide*<2->{
+\item tecniche ``globali''  (spline)%
+}%
+\onslide*<3->{%
+: definiamo un modello flessibile per $f(x;{\bm\theta})$
+}%
+\onslide*<2>{
+\begin{itemize}
+\item definiamo una classe di funzioni $f(x;{\bm\theta})$ abbastanza flessibile da poter approssimare qualunque funzione regolare $f(\cdot)$
+\item stimiamo  $f$ scegliendo il miglio rappresentante in $f(x;{\bm\theta})$
+\end{itemize}
+}
+\end{itemize}
+\onslide*<4->{
+Un aspetto cruciale in entrambi i metodi \`e determinare quanto liscia debba essere $\hat{f}$ che si traduce in 
+\begin{itemize}
+\item decidere cosa significa ``vicino''
+\item decidere quanto flessibile dev'essere il modello $f(x;{\bm\theta})$ 
+\end{itemize}
+In entrambi i casi, serve un compromesso tra distorsione e varianza.
+}
+\end{frame}
+
+
+
+\section[Gaussiana]{Regressione non parametrica, caso gaussiano}
+
+
+\begin{Schunk}
+\begin{Sinput}
+> cmb=read.table("wmap.dat",header=TRUE)
+> lidar=read.table("lidar.dat",header=TRUE)
+> lidar=lidar[sort.list(lidar$range),]
+> bpd=read.table("bpd.dat",header=TRUE)
+> #cmb[1,]
+> #plot(cmb[,1],cmb[,2])
+\end{Sinput}
+\end{Schunk}
+
+
+\begin{frame}[fragile]{Esempio: dati ``lidar''}
+\begin{columns}
+\column{0.45\textwidth}
+\column{0.55\textwidth}
+LIDAR = LIght Detection And Ranging
+\begin{itemize}
+\item \`e una tecnica per individuare composti chimici nell'atmosfera
+\item $x$: distanza percorsa prima della riflessione
+\item $y$: logaritmo del rapporto tra luce ricevuta tra le due fonti laser
+\end{itemize}
+\end{columns}
+
+\begin{itemize}
+\item L'obiettivo \`e stimare
+\[ f(x) = E(Y|X=x) \]
+\item
+(Esempio ben noto dove le tecniche banali, trasformazioni o regressione polinomiale, funzionano male.)
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[t]{LIDAR: modello lineare}
+\begin{columns}[T]
+\column{0.5\textwidth}
+Assumiamo
+\[ {\bf y} = X{\bm\beta} + {\bm\varepsilon} \]
+dove $X\in\mathcal M_{n\times p}$, ${\bm\beta}\in\mathbb R^p$, ${\bm\varepsilon}\thicksim N(0,\sigma^2I)$, 
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(2,2,0.2,0.2))
+> plot(lidar$range,lidar$logratio,pch=20,xlab="x",ylab="y",ylim=c(-1,0.2))
+> abline(lm(lidar$logratio~lidar$range))
+\end{Sinput}
+\end{Schunk}
+
+Non molto soddisfacente...
+\column{0.5\textwidth}
+\onslide*<1>{
+Usando la massima verosimiglianza
+\[ {\hat{\bm\beta}} = (X^TX)^{-1}X^T{\bf y} \]
+sicch\'e
+\[ {\bf\hat y} = X{\hat{\bm\beta}}= X(X^TX)^{-1}X^T{\bf y} \]
+dove $H=X(X^TX)^{-1}X^T$ \`e la matrice di proiezione da $\mathbb R^n$ al sottospazio generato dalle colonne di $X$, si ricordi che
+\[ \mbox{trace}{H}=p \]
+}
+\onslide*<2>{
+Si noti che
+\[ {\bf\hat y} = X{\hat{\bm\beta}}{\bf y}= X(X^TX)^{-1}X^T{\bf y} \]
+significa che la stima del valore atteso condizionato \`e
+\[ \widehat{E(Y|X=x)} = \hat{f}(x) = \sum_{i=1}^n h_i(x) Y_i \]
+dove
+\[ h({\bf x})^T= {\bf x}^T(X^TX)^{-1}X^T \]
+}
+\end{columns}
+\end{frame}
+
+
+
+\begin{frame}{LIDAR: costante a tratti}
+Consideriamo una partizione dello spazio della variabile esplicativa, indichiamo gli estremi degli intervalli con
+\[ -\infty= c_0 < c_1 < \ldots < c_{K-1} < c_K = +\infty \]
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,0.2,0.2))
+> x=lidar$range
+> y=lidar$logratio
+> c=c(min(x),550,600,650,max(x))
+> plot(lidar$range,lidar$logratio,pch=20,xlab="x",ylab="y")
+> abline(v=c,lty=2)
+> y.hat=y
+> for (i in 1:(length(c)-1)) {
++   #y.hat[(x>=c[i])&(x<c[i+1])]=mean(y[(x>=c[i])&(x<c[i+1])])
++   lines(x[(x>=c[i])&(x<c[i+1])],rep(mean(y[(x>=c[i])&(x<c[i+1])]),length(x[(x>=c[i])&(x<c[i+1])])),lwd=2,col="red")
++ }
+> 
+> #lines(x,y.hat,lwd=2,col="red")
+\end{Sinput}
+\end{Schunk}
+\column{0.5\textwidth}
+e stimiamo $E(Y|X=x)$ assumendo sia costante negli intervalli
+\[ \hat{f}(x) = \frac{\sum_{k=0}^{K-1}\sum_{i=1}^n y_i I_{[c_k,c_{k+1}]}(x_i)}{\sum_{k=0}^{K-1}\sum_{i=1}^n I_{[c_k,c_{k+1}]}(x_i)} \]
+
+Il risultato 
+\begin{itemize}
+\item non \`e liscio (addirittura discontinuo), e 
+\item dipende dalla scelta degli intervalli.
+\end{itemize}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}[t]{LIDAR: media mobile\onslide*<2>{ (vicini pi\`u vicini)}}
+Se assumiamo che $f(x)$ sia continua, allora \`e ragionevole stimare $f(x)$ come la media di valori di  $Y_i$ che corrispondono a $x_i$ vicini a $x$.
+\begin{columns}[T]
+\column{0.5\textwidth}
+\onslide*<1>{
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,0.2,0.2))
+> plot(lidar$range,lidar$logratio,pch=20,xlab="x",ylab="y")
+> runmean=function(x,xx,yy,h){
++   mean(yy[abs(xx-x)<h])
++ }
+> runmean2=function(x,xx,yy,h)  
++   mapply(runmean,x,MoreArgs=list(xx=xx,yy=yy,h=h))
+> curve(runmean2(x,lidar$range,lidar$logratio,h=10),add=TRUE,lwd=2,col="red")
+> curve(runmean2(x,lidar$range,lidar$logratio,h=50),add=TRUE,lwd=2,col="darkgreen")
+> #lines(x,y.hat,lwd=2,col="red")
+> legend(400,-0.6,legend=c("h=10","h=50"),lwd=2,col=c("red","darkgreen"))
+\end{Sinput}
+\end{Schunk}
+
+}
+\onslide*<2>{
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,0.2,0.2))
+> plot(lidar$range,lidar$logratio,pch=20,xlab="x",ylab="y")
+> hneighmean=function(x,xx,yy,h){
++   mean(yy[abs(xx-x)<sort(abs(xx-x))[h]])
++ }
+> hneighmean2=function(x,xx,yy,h)  
++   mapply(hneighmean,x,MoreArgs=list(xx=xx,yy=yy,h=h))
+> curve(hneighmean2(x,lidar$range,lidar$logratio,h=5),add=TRUE,lwd=2,col="red")
+> curve(hneighmean2(x,lidar$range,lidar$logratio,h=30),add=TRUE,lwd=2,col="darkgreen")
+> #lines(x,y.hat,lwd=2,col="red")
+> legend(400,-0.6,legend=c("k=5","k=30"),lwd=2,col=c("red","darkgreen"))
+\end{Sinput}
+\end{Schunk}
+
+}
+\column{0.5\textwidth}
+\onslide*<1>{
+
+In particulare potremmo usare la media di quegli $x_i$ che giacciono in un intorno di $x$ di raggio $h$
+\[ \hat{f}(x) = \frac{\sum_{i=1}^n y_i I_{h}(|x-x_i|)}{\sum_{i=1}^n I_{h}(|x-x_i|)} \]
+
+}
+
+\onslide<2>{
+Alternativamente potremmo usare la media dei $k$ vicini pi\`u vicini ad $x$, 
+\[ N_k(x)=\{x_i: |x-x_i|\leq d_{(k)}\} \]
+dove $d_i=|x-x_i|$ e $d_{(1)}\leq \ldots\leq d_{(n)}$ sono le distanze ordinate, allora
+\[ \hat{f}(x) = \frac{1}{k} \sum_{i=1}^n y_i I_{N_k(x)}(x_i) \]
+
+}
+\end{columns}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Errore di stima: distorsione e varianza}
+La stima
+\[ \hat{f}(x) = \frac{1}{k} \sum_{i=1}^n y_i I_{N_k(x)}(x_i)  
+= \frac{1}{k} \sum_{y_i\in N_k(x)} y_i  \]
+dove $N_k(x)=\{x_i: |x-x_i|\leq d_{(k)}\}$ \`e basata su  $k$ osservazioni: {\bf pi\`u grande \`e $k$}, 
+\begin{itemize}
+\item pi\`u osservazioni sono usate e quindi minore \`e la variabilit\`a:
+\begin{itemize}
+\item<2>  {\bf pi\`u piccola \`e la  varianza}
+\end{itemize}
+\item d'altra parte, s'impiegano osservazioni pi\`u distanti, a seconda della forma di $f()$ in un intorno di $x$, la media delle osservazioni pu\`o differire pi\`u o meno marcatamente da $E(Y|X=x)=f(x)$:
+\begin{itemize}
+\item<2>  {\bf pi\`u grande \`e la distorsione}
+\end{itemize}
+\end{itemize}
+Il compromesso tra distorsione e varianza \`e una caratteristica distintiva dei lisciatori.
+\end{frame}
+
+\begin{frame}{Distorsione, forma di $f$ e $k$}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(2,1,1,0))
+> layout(matrix(c(1:8),byrow=FALSE,nrow=2))
+> n=50
+> k1=10
+> k2=40
+> x=sort(runif(n,0,1))
+> x0=0.5
+> ind1=sort.list(abs(x-x0),decreasing = FALSE)[1:k1]
+> ind2=sort.list(abs(x-x0),decreasing = FALSE)[1:k2]
+> x1=x[sort.list(abs(x-x0),decreasing = FALSE)[1:k1]]
+> x2=x[sort.list(abs(x-x0),decreasing = FALSE)[1:k2]]
+> ff=function(x) 0.5+0*x
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf=function(){
++   plot(x,y,ylim=c(-0.1,1),yaxt="n",xaxt="n",xlab="",ylab="",yaxs="i")
++   axis(1,at=range(x1),labels=c("",""))
++   axis(1,at=x0,labels=expression(x[0]))
++   rect(min(x1),-0.1,max(x1),1,lwd=2,col=hsv(184/360,.57,.98,alpha=0.2),border=NA)
++   lines(range(x1),-0.1*c(1,1),lwd=2,col="blue")
++   curve(ff(x),add=TRUE,lwd=1,n=100)
++   points(x1,y[ind1],col="blue",pch=20)
++   points(x0,mean(y[ind1]),col="red",pch=4,cex=2)
++ 
++   plot(x,y,ylim=c(-0.1,1),yaxt="n",xaxt="n",xlab="",ylab="",yaxs="i")
++   axis(1,at=range(x2),labels=c("",""))
++   axis(1,at=x0,labels=expression(x[0]))
++   lines(range(x2),-0.1*c(1,1),lwd=2,col="blue")
++   rect(min(x2),-0.1,max(x2),1,lwd=2,col=hsv(184/360,.57,.98,alpha=0.2),border=NA)
++   curve(ff(x),add=TRUE,lwd=1,n=100)
++   points(x2,y[ind2],col="blue",pch=20)
++   points(x0,mean(y[ind2]),col="red",pch=4,cex=2)
++ }
+> ungraf()
+> ff=function(x) x
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf()
+> ff=function(x) 1-cos(pi*x^2/2)
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf()
+> ff=function(x) ((x-x0)*3)^2/2
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf()
+\end{Sinput}
+\end{Schunk}
+\end{frame}
+
+\begin{frame}[t]{Derivazione teorica di distorsione e varianza}
+Sia $N_k(x)=\{x_i: |x-x_i|\leq d_{(k)}\}$, e lo stimatore 
+\[ \hat{f}(x) = \frac{1}{k} \sum_{i=1}^n y_i I_{N_k(x)}(x_i) = \frac{1}{k} \sum_{y_i\in N_k(x)} y_i \]
+
+
+\onslide*<1>{
+La varianza \`e (assumendo $V(Y_i)=\sigma^2$ per ogni $i$)
+\[ V(\hat{f}(x)) = \frac{1}{k}\sum_{y_i\in N_k(x)}V(Y_i) = \frac{\sigma^2}{k} \]
+}
+\onslide*<2>{
+La distorsione \`e
+\begin{align*}
+E(\hat{f}(x))-f(x) 
+&= \frac{1}{k} \sum_{N_k(x)} (f(x_i)-f(x)) \\
+&\approx \frac{1}{k} \sum_{N_k(x)} \left(f'(x)(x_i-x)+\frac{1}{2}f''(x)(x_i-x)^2\right) \\
+\intertext{assumendo le covariate equidistanziate: $x_{i+1}-x_i=\Delta$}
+&\approx  \frac{2k(k+2)(k+1)}{6k} f''(x)\Delta^2
+\end{align*}
+}
+\onslide*<3>{
+Quindi l'MSE \`e
+\[ E((\hat{f}(x)-f(x))^2) \approx \left(\underbrace{\frac{2k(k+2)(k+1)}{6k} f''(x)\Delta^2 }_{distorsione}\right)^2 + \underbrace{\frac{\sigma^2}{k}}_{varianza}\]
+e quindi
+\begin{itemize}
+\item la distorsione cresce con $k$ e con $|f''|$
+\item la varianza decresce con $k$
+\end{itemize}
+}
+\end{frame}
+
+\begin{Schunk}
+\begin{Sinput}
+> sim=data.frame(x=seq(0,1,length=150)) #sort(runif(150,0,1)))
+> sim$m=sin(2*pi*sim$x^3)
+> sim$y=sim$m+rnorm(nrow(sim),0,0.4)
+\end{Sinput}
+\end{Schunk}
+
+\begin{frame}[t]{Distorsione e varianza, esempio}
+Consideriamo un campione, la vera $f(\cdot)$ \`e in verde, 
+\onslide<2->{
+\begin{itemize}
+\item calcoliamo distorsione, varianza e quindi MSE per $\hat{f}_k(0.6)$ in funzione di $k$, individuiamo un valore ottimale di $k$.
+\onslide<3>{
+\item facciamo lo stesso per $\hat{f}_k(0.9)$, otteniamo un {\bf diverso} valore ottimale di $k$.
+}
+\end{itemize}
+} 
+
+\begin{columns}[T]
+\column{0.33\textwidth}
+\onslide*<1>{%
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,2,0.3))
+> sig2=0.4^2
+> DDf=function(x) 12*pi*x*cos(2*pi*x^3) - 36*pi^2*x^4*sin(2*pi*x^3)
+> Delta=mean(sim$x[-1]-sim$x[-length(sim$x)])
+> plot(sim$x,sim$y,xlab="x",ylab="y")
+> lines(sim$x,sim$m,col="darkgreen",lwd=2)
+\end{Sinput}
+\end{Schunk}
+}%
+\onslide*<2>{%
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,2,0.3))
+> plot(sim$x,sim$y,xlab="x",ylab="y")
+> lines(sim$x,sim$m,col="darkgreen",lwd=2)
+> curve(hneighmean2(x,sim$x,sim$y,h=25),add=TRUE,lwd=2,col="red")
+> abline(v=0.6)
+\end{Sinput}
+\end{Schunk}
+}%
+\onslide*<3>{%
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,2,0.3))
+> plot(sim$x,sim$y,xlab="x",ylab="y")
+> lines(sim$x,sim$m,col="darkgreen",lwd=2)
+> curve(hneighmean2(x,sim$x,sim$y,h=25),add=TRUE,lwd=2,col="red")
+> abline(v=0.6)
+> lines(sim$x,sim$m,col="darkgreen",lwd=2)
+> curve(hneighmean2(x,sim$x,sim$y,h=10),add=TRUE,lwd=2,col="blue")
+> abline(v=0.9)
+> 
+\end{Sinput}
+\end{Schunk}
+}%
+\column{0.33\textwidth}
+\onslide*<2-3>{
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,2,0.3))
+> curve(sig2/x,from=1,to=40,main="x=0.6",xlab="k",ylab="MSE")
+> curve(((x+2)^2/(6*4)*DDf(0.6)*Delta^2)^2,add=TRUE)
+> curve(sig2/x+((x+2)^2/(6*4)*DDf(0.6)*Delta^2)^2,add=TRUE,lwd=2)
+\end{Sinput}
+\end{Schunk}
+}%
+\column{0.33\textwidth}
+\onslide*<3>{
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,2,0.3))
+> curve(sig2/x,from=1,to=40,main="x=0.9",xlab="k",ylab="MSE")
+> curve(((x+2)^2/(6*4)*DDf(0.9)*Delta^2)^2,add=TRUE)
+> curve(sig2/x+((x+2)^2/(6*4)*DDf(0.9)*Delta^2)^2,add=TRUE,lwd=2)
+\end{Sinput}
+\end{Schunk}
+}%
+\end{columns}
+
+\end{frame}
+
+
+
+\begin{frame}{Da $MSE(x)$ all'errore complessivo}
+Disponiamo dell'MSE per $\hat{f}_k(x)$:
+\[
+ MSE(\hat{f}_k(x)) =  E((f(x)-\hat{f}_k(x))^2) = (f(x)-E(\hat{f}_k(x)))^2 + V(\hat{f}_k(x)) %= \mbox{bias}_x^2 + \mbox{variance}_x
+\]
+mettiamoli insieme per ottenere un errore complessivo
+\[ R(k) = E\left(\frac{1}{n}\sum_{i=1}^n (\hat{f}_k(x_i) - f(x_i))^2\right) \]
+%The MSE is usually estmated by the {\bf leave-one-out cross validation}
+%\[
+%CV = \hat{R}(h) =\frac{1}{n} \sum_{i=1}^n (Y_i - \hat{f}_{-i}(x_i))^2
+%\]
+%where $\hat{f}_i$ is the estimator obtained omitting the $i$-the pair $(x_i,Y_i)$.
+\begin{columns}
+\column{0.6\textwidth}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,0.3,0.3))
+> distcompl=apply(outer(1:40,sim$x,FUN=function(x,y) ((x+2)^2/(6*4)*DDf(y)*Delta^2)^2),1,mean)
+> curve(sig2/x,from=1,to=40,xlab="k",ylab="R(k)")
+> lines(1:40,distcompl)
+> lines(1:40,sig2/1:40+distcompl,lwd=2)
+\end{Sinput}
+\end{Schunk}
+\column{0.4\textwidth}
+La scelta di $k$ potrebbe basarsi su $R(k)$, ha senso scegliere $k=\mbox{argmin}_k R(k)$.
+\end{columns}
+\end{frame}
+
+\begin{frame}{Stimatore di $R()$}
+L'obiettivo \`e stimare
+\[ R(k) = E\left(\frac{1}{n}\sum_{i=1}^n (\hat{f}_k(x_i) - f(x_i))^2\right) \]
+(principalmente per individuare il valore ottimale di $k$.)
+
+\spazio
+
+Uno stimatore na\"if sarebbe
+\[  \frac{1}{n} \sum_{i=1}^n (Y_i-\hat{f}_k(x_i))^2 \]
+ma questo \`e ovviamente una sottostima in quanto ...
+
+\end{frame}
+
+
+\begin{frame}{Stimatore di $R()$: validazione incrociata uno  a uno}
+Uno stimatore migliore per $R(k)$ \`e
+\[
+CV(k) = \hat{R}(k) =\frac{1}{n} \sum_{i=1}^n (Y_i - \hat{f}_{k,-i}(x_i))^2
+\]
+dove $\hat{f}_{k,-i}(x_i)$ \`e il lisciatore stimato {\bf senza} l'$i$-esima osservazione.
+
+Si noti che
+\begin{eqnarray*}
+E(Y_i-\hat{f}_{k,-i}(x_i))^2 
+&=& E(Y_i-f(x_i)+f(x_i)-\hat{f}_{k,-i}(x_i))^2 \\
+&=& \sigma^2 + E(f(x_i)-\hat{f}_{h,-i}(x_i))^2 \\
+&\approx& \sigma^2 + E(f(x_i)-\hat{f}_{k}(x_i))^2 
+\end{eqnarray*}
+Cio\`e, $\hat{R}$ \`e, approssimativamente, uno stimatore non distorto dell'errore di previsione
+\[ E(\hat{R}) \approx R + \sigma^2  \]
+\end{frame}
+
+
+\begin{frame}{Lisciatori lineari}
+Discutiamo della stima dell'errore per una classe di lisciatori che comprende quelli visti sopra e molti altri: i {\bf lisciatori lineari}, ovvero dei lisciatori per i quali esiste, per ogni $x$, un vettore $\ell(x)=(\ell_1(x),\ldots,\ell_n(x))^T$ tale che
+\[ \hat{f}(x) = \sum_{i=1}^n \ell_i(x) Y_i  \]
+il che significa che
+\[
+{\bf\hat{f}} =
+\begin{bmatrix}
+\hat{f}(x_1) \\ \vdots \\ \hat{f}(x_n)
+\end{bmatrix}
+=
+\begin{bmatrix}
+\ell_1(x_1) & \cdots & \ell_n(x_1) \\ \vdots \\ \ell_1(x_n) & \cdots & \ell_n(x_n) 
+\end{bmatrix}
+{\bf Y} 
+= L{\bf Y}
+\]
+La matrice $L$ \`e la {\bf matrice di lisciamento}, si definiscono anche i gradi di libert\`a del lisciatore come
+\[ \nu = tr(L) \]
+\end{frame}
+
+\begin{frame}{Lisciatori lineari}
+I precedenti lisciatori sono tutti lisciatori lineari, ricaviamo le matrici $L$ ad essi associati. 
+(Senza perdita di generalit\`a, si assume che le $x_i$ siano ordinate).
+\begin{itemize}
+\item regressogramma:  $L$ \`e diagonale a blocchi e assume valore pari al reciproco del numero di osservazioni in ciascun blocco.
+\item medie mobili 
+\begin{itemize}
+\item vicini pi\`u vicini: $L$ \`e 0 ovunque tranne che su una striscia intorno alla diagonale dove vale $1/k$.
+\item raggio: $L$ \`e analoga al caso precedente se le $x_i$ sono equidistanziate, altrimenti...
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Validazione incrociata uno  a uno per lisciatori lineari}
+Per un lisciatore lineare definito dalla matrice $L$ 
+\[
+CV = \hat{R}(k) =\frac{1}{n} \sum_{i=1}^n (Y_i - \hat{f}_{k,-i}(x_i))^2
+= \frac{1}{n} \sum_{i=1}^n\left(\frac{Y_i-\hat{f}_k(x_i)}{1-L_{ii}}\right)^2
+\]
+sicch\'e non necessita di ricalcolare il lisciatore ma solo di conoscere  $L_{ii}$.
+
+\spazio
+
+Un'ulteriore semplificazione \`e costituita dal {\bf criterio di validazione incrociata generalizzata} che prevede di sostituire $L_{ii}$ con il suo valore medio
+\[ 
+GCV = \frac{1}{n} \sum_{i=1}^n\left(\frac{Y_i-\hat{f}(x_i)}{1-\nu/n}\right)^2
+\]
+\end{frame}
+
+\begin{frame}[allowframebreaks=0.95]{Derivazione delle formule per CV e GCV}
+Definiamo $\hat{f}_{-i}(x_i)$. Essendo
+\[
+\hat{f}(x_i) = \sum_{j=1}^n \ell_j(x_i) y_j
+\]
+e assumendo $\sum_{j=1}^n \ell_j(x_i)=1$ (le costanti sono mantenute), definiamo
+\[
+\hat{f}_{-i}(x_i) = \frac{\sum_{j\neq i} \ell_j(x_i) y_j}{\sum_{j\neq i} \ell_j(x_i) } = \frac{\sum_{j\neq i} \ell_j(x_i) y_j}{1- \ell_i(x_i) }= \frac{\sum_{j\neq i} \ell_j(x_i) y_j}{1- L_{ii} }
+\]
+
+\spazio
+
+Si noti che potremmo definire $\hat{f}_{-i}()$ come il lisciatore ri-stimato senza  $(x_i,y_i)$, la definizione \`e equivalente per lo stimatore a raggio, non per i $k$ pi\`u vicini.
+
+\break
+
+Con la formula sopra si ottiene
+\begin{align*}
+y_i-\hat{y}_{-i} 
+&= y_i - \frac{1}{1-L_{ii}} \sum_{j\neq i} \ell_j(x_i) y_j \\
+&= y_i - \frac{1}{1-L_{ii}} \left(\sum_{j=1}^n \ell_j(x_i) y_j - L_{ii}y_i\right) \\
+&= y_i - \frac{1}{1-L_{ii}} \left(\hat{y}_i - L_{ii}y_i\right) \\
+&= \frac{1}{1-L{ii}} \left((1-L_{ii})y_i - \hat{y}_i + L_{ii}y_i\right) = \frac{1}{1-L{ii}}(y_i-\hat{y}_i) 
+\end{align*}
+e quindi la formula del GCV.
+
+
+\end{frame}
+
+
+\begin{frame}{Altri criteri}
+Si noti che, essendo $(1-x)^{-2}\approx 1+2x$ in un intorno di $0$, il GCV \`e approssimativamente uguale al $C_p$ di Mallow.
+\[ 
+GCV = \frac{1}{n} \sum_{i=1}^n\left(\frac{Y_i-\hat{f}(x_i)}{1-\nu/n}\right)^2
+\approx \frac{1}{n} \sum_{i=1}^n\left(Y_i-\hat{f}(x_i)\right)^2 + \frac{2\nu\hat{\sigma}^2}{n} = C_p
+\]
+Pi\`u in generale, molti criteri usati per la scelta del grado di lisciamento ($k$) hanno la forma
+\[
+B(k) = \Lambda(n,k)\frac{1}{n} + \sum_{i=1}^n\left(Y_i-\hat{f}(x_i)\right)^2 
+\]
+per qualche funzione $\Lambda(\cdot,\cdot)$
+\end{frame}
+
+\section[Nucleo]{Regressione col metodo del nucleo}
+
+\begin{frame}{Kernel regression}
+Con i metodi descritti sin qui, man mano che ci si muove lungo l-asse $x$, si calcola $\hat{f}(x)$ come media di differenti gruppi di osservazioni $y_i$.
+
+\spazio
+
+Questo porta a una stima finale poco ``liscia''.
+
+\spazio
+
+Un modo di lisciare maggiormente \`e di usare una media pesata dove il peso delle osservazioni decresce man mano che ci si allontana da $x$.
+\end{frame}
+
+\begin{frame}{Stimatore di Nadaraya-Watson}
+Lo stimatore di Nadaraya-Watson \`e  un lisciatore lineare
+\[ \hat{f}(x) = \sum_{i=1}^n \ell_i(x) Y_i  \]
+in cui
+\[ \ell_i(x) = \frac{K\left(\frac{x-x_i}{h}\right)}{\sum_{j=1}^n K\left(\frac{x-x_j}{h}\right)} \]
+dove $K()$ \`e un nucleo.
+\end{frame}
+
+\begin{frame}{Nuclei}
+\begin{columns}
+\column{0.5\textwidth}
+Si ha
+%\begin{tiny}
+\[
+\hat{f}_n(x) = \frac{\sum_{i=1}^n K\left(\frac{x-X_i}{h}\right)Y_i}{\sum_{i=1}^n K\left(\frac{x-X_i}{h}\right)} 
+\]
+%\end{tiny}
+dove $K$ \`e tale che
+\begin{itemize}
+\item $ K(x)\geq 0$
+\item $ \int K(x)dx=1$
+\item $ \int xK(x)dx=0$
+\item $ \int x^2K(x)dx>0$
+\end{itemize}
+\column{0.5\textwidth}
+Esempi di nuclei
+
+\begin{tabular}{cc}\hline
+& $K(u)$ \\\hline
+Uniform & $\frac{1}{2}I_{[-1,1]}(u)$ \\
+Triangle & $(1-|u|)I_{[-1,1]}(u)$ \\
+Triweight & $\frac{35}{32}(1-u^2)^3I_{[-1,1]}(u)$ \\
+Quartic & $\frac{15}{16}(1-u^2)^2I_{[-1,1]}(u)$ \\
+Gaussian & $\frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ \\
+Epanechnikov & $\frac{3}{4}(1-u^2)I_{[-1,1]}(u)$ \\
+Cosine & $\frac{\pi}{4}\cos\left(\frac{\pi}{2}u\right)I_{[-1,1]}(u)$ \\\hline
+\end{tabular}
+\end{columns}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Kernel functions}
+
+\begin{tabular}{cccc}
+Uniform &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Uniform} 
+}%
+& 
+Triangle &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Triangle} 
+}%
+\\
+$\frac{1}{2}I_{[-1,1]}(u)$ & &  $(1-|u|)I_{[-1,1]}(u)$ & \\ & & & \\ & & & \\
+Triweight &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Triweight} 
+}%
+& 
+Quartic &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Quartic} 
+}%
+\\
+ $\frac{35}{32}(1-u^2)^3I_{[-1,1]}(u)$ & &   $\frac{15}{16}(1-u^2)^2I_{[-1,1]}(u)$ & \\ & & & \\ & & & \\
+Cosine &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Cosine} 
+}%
+& 
+Epanechnikov &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Epanechnikov} 
+}%
+\\
+$\frac{\pi}{4}\cos\left(\frac{\pi}{2}u\right)I_{[-1,1]}(u)$ & &    $\frac{3}{4}(1-u^2)I_{[-1,1]}(u)$  & \\ & & & \\ & & & \\
+Gaussian &
+\multirow{4}{*}{
+\includegraphics[width=0.15\textwidth]{figure/Gaussian} 
+}%
+& 
+ &
+\multirow{4}{*}{}%
+\\
+$\frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ & &      & \\ & & & \\ & & & \\
+
+\end{tabular}
+\end{frame}
+
+
+\begin{frame}{Nadaraya-Watson estimator: risk}
+Si mostra che, se $x_i$ proviene dalla densit\`a $g()$, per $h_n\rightarrow 0$ e $nh_n\rightarrow\infty$
+\begin{align*}
+R = &\frac{h_n^4}{4}\left(\int u^2K(u)du\right)^2\int \left(f''(x)+2f'(x)\frac{g'(x)}{g(x)}\right)^2dx \\
+&\phantom{====}+ \frac{\sigma^2\int K^2(u)du}{nh_n}\int\frac{1}{g(x)}dx +o(nh_n^{-1}) +o(h_n^4)
+\end{align*}
+
+Dove si nota che
+\begin{itemize}
+\item la varianza decresce con $h$
+\item la distorsione cresce con $h^4$
+\item la distorsione cresce con  $f''$
+\item la distorsione cresce con  $f'(x)\frac{g'(x)}{g(x)}$: {\it design bias}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Design bias e boundary bias}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(2,1,1,0))
+> laymat=matrix(c(1:8),byrow=FALSE,nrow=2)
+> laymat=laymat[c(1,1,2),]
+> layout(laymat)
+> n=200
+> ungraf2=function(bw=1){
++   miny=min(y)-0.05*(max(y)-min(y))
++   maxy=max(y)+0.05*(max(y)-min(y))
++   plot(x,y,ylim=c(miny,maxy),yaxs="i",yaxt="n",xlab="",ylab="",col=gray(0.7))
++   rug(x,line=0.5)
++   a=ksmooth(x,y,bandwidth=bw)
++   lines(a$x,a$y,lwd=2,col="blue")
++   #rect(min(x1),-0.1,max(x1),1,lwd=2,col=hsv(184/360,.57,.98,alpha=0.2),border=NA)
++   #lines(range(x1),-0.1*c(1,1),lwd=2,col="blue")
++   curve(ff(x),add=TRUE,lwd=1,n=100,col="red")
++   sig=0.25*bw/qnorm(0.75)
++   curve(miny+0.1*(maxy-miny)*dnorm(x,0.5,sig)/dnorm(0.5,0.5,sig),add=TRUE,lwd=2,col="lightblue")
++   hist(x,freq=FALSE,main="",yaxt="n",col=gray(0.7),border="white")
++ }
+> x=seq(0,1,length=n) #sort(runif(n,0,1))
+> ff=function(x) (x-0.5)^2
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf2(bw=0.4)
+> x=qnorm(seq(0,1,length=(n+2))[2:(n+1)]) #sort(rnorm(n,0,1))
+> x=(x-min(x))/(max(x)-min(x))
+> ff=function(x) (x-0.5)^2
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf2(bw=0.4)
+> x=seq(0,1,length=n) #sort(runif(n,0,1))
+> ff=function(x) 0.5+x
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf2(bw=0.5)
+> x=qnorm(seq(0,1,length=(n+2))[2:(n+1)]) #sort(rnorm(n,0,1))
+> x=(x-min(x))/(max(x)-min(x))
+> ff=function(x) 0.5+x
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf2(bw=0.5)
+> 
+\end{Sinput}
+\end{Schunk}
+\end{frame}
+
+
+
+\begin{frame}{Boundary bias}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,0,0),mfrow=c(2,1))
+> plot(sim$x,sim$y,col=gray(0.7))
+> lines(sim$x,sim$m,col="red")
+> lines(ksmooth(sim$x,sim$y,kernel="normal",bandwidth = 0.1))
+> sim=data.frame(x=seq(0,1,length=150)) #sort(runif(150,0,1)))
+> sim$m=sin(2*pi*sim$x^3)
+> plot(sim$x,sim$m,ylim=c(-2,2),type="l")
+> lines(sim$x,sim$m,col="red")
+> for (i in 1:30){
++   sim$yR=sim$m+rnorm(nrow(sim),0,0.4)
++   lines(ksmooth(sim$x,sim$yR,kernel="normal",bandwidth = 0.1))
++ }
+> lines(sim$x,sim$m,col="red",lwd=2)
+\end{Sinput}
+\end{Schunk}
+\end{frame}
+
+
+\begin{frame}{N-W come mimimo \onslide*<2->{$\rightarrow$ polinomi locali}}
+\onslide*<1>{
+Notiamo che lo stimatore di N-W in $x$, $\hat{f}(x)$, \`e la soluzione di
+\[ \underset{a}{\mbox{argmin}} \sum_{i=1}^n K_i\left(\frac{x_i-x}{h}\right)(Y_i - a)^2 \]
+cio\`e, lo stimatore di N-W \`e, localmente, uno stimatore dei minimi quadrati pesati.
+
+\spazio
+}
+\onslide*<1->{
+Si potrebbe allora impiegare i minimi quadrati pesati ma con un polinomio anzich\`e una costante, per ogni valore di $x$ si approssima  $f()$ in un intorno di $x$ con il polinomio
+\[ p_x(u;{\bf a}) = a_0 + a_1(u-x) + \frac{a_2}{2!}(u-x)^2 +\ldots + \frac{a_p}{p!}(u-x)^p \]
+}
+\onslide*<2->{
+e si stima ${\bf a}(x)$ (rendiamo esplicita la dipendenza da $x$) minimizzando
+\[ \hat{\bf a}(x) = \underset{a}{\mbox{argmin}} \sum_{i=1}^n K_i\left(\frac{x_i-x}{h}\right)(Y_i - p_x(X_i;{\bf a}))^2 \]
+e definiamo il seguente stimatore di $f(x)$ 
+\[ \hat{f}(x) = p_x(x,\hat{\bf a}) = \hat{a}_0(x) \]
+}
+\end{frame}
+
+\begin{frame}{Polinomi locali, notazione matriciale}
+\onslide*<1>{
+Sia
+\[
+X_x=
+\begin{bmatrix}
+1 & x_1-x & \cdots & \frac{1}{p!}(x_1-x)^p \\
+\vdots & \vdots & & \vdots\\
+1 & x_n-x & \cdots & \frac{1}{p!}(x_n-x)^p \\
+\end{bmatrix}
+\]
+\[
+W_x =\mbox{diag}\left\{K_i\left(\frac{x_i-x}{h}\right), i=1,\ldots, n\right\}
+\]
+allora la somma dei quadrati pesata \`e
+\[
+({\bf Y} -X_x{\bf a})^T W_x ({\bf Y} -X_x{\bf a})
+\]
+e
+}
+\onslide*<1->{
+\[
+\hat{\bf a} = (X_x^TW_xX_x)^TX_x^TW_x{\bf Y}
+\]
+}
+\onslide*<2->{
+Lo stimatore $\hat{f}(x)=\hat{a}_0(x)$ \`e dunque
+\[ 
+\hat{f}(x) = e_1^T(X_x^TW_xX_x)^TX_x^TW_x{\bf Y}
+\]
+dove $e_1^T=(1,0,\ldots,0)$.
+
+Quindi $\hat{f}(x)$ \`e un lisciatore lineare
+\[ \hat{f}(x) = \sum_{i=1}^n \ell_i(x) Y_i \]
+dove
+\[ \ell(x)^T = (\ell_1(x),\ldots,\ell_n(x))^T = e_1^T(X_x^TW_xX_x)^TX_x^TW_x \]
+}
+\end{frame}
+
+\begin{frame}{Lisciatore lineare locale}
+Posto $p=1$, si ottiene lo stimatore lineare locale
+\[ \ell_i(x) = \frac{b_i(x)}{\sum_{j=1}^n b_j(x)} \]
+dove
+\[ b_i(x) = K\left(\frac{x_i-x}{h}\right)(S_{n,2}(x)-(x_i-x)S_{n,1}(x)) \]
+\[ S_{n,j}(x) = \sum_{i=1}^nK\left(\frac{x_i-x}{h}\right)(x_i-x)^j,\;\;j=1,2\]
+\end{frame}
+
+\begin{frame}{Lisciatore lineare locale: distorsione e varianza}
+Si mostra che il rischio in $x$ \`e
+\begin{eqnarray*}
+R_x = \frac{h_n^4}{4}\left( \int u^2K(u)du\right)^2 f''(x)^2 + \frac{\sigma^2\int K^2(u)du}{g(x)nh_n} +o(nh_n^{-1}) +o(h_n^4)
+\end{eqnarray*}
+\onslide<2>{
+Se lo confrontiamo con quello dello stimatore di N-W notiamo che \`e scomparso il {\it design bias}.
+\begin{align*}
+R = &\frac{h_n^4}{4}\left(\int u^2K(u)du\right)^2\int \left(f''(x)+2f'(x)\frac{g'(x)}{g(x)}\right)^2dx \\
+&\phantom{====}+ \frac{\sigma^2\int K^2(u)du}{nh_n}\int\frac{1}{g(x)}dx +o(nh_n^{-1}) +o(h_n^4)
+\end{align*}
+
+}
+
+\end{frame}
+
+
+
+\begin{frame}{Graphical representation}
+\end{frame}
+
+\begin{frame}{Graphical representation}
+\end{frame}
+
+\begin{frame}{Graphical representation: comparison}
+\end{frame}
+
+
+
+
+\begin{frame}{Boundary bias}
+
+N-W versus local linear, same bandwith
+\begin{center}
+\begin{Schunk}
+\begin{Sinput}
+> library(sm)
+> sim=data.frame(x=seq(0,1,length=150)) #sort(runif(150,0,1)))
+> sim$m=sin(2*pi*sim$x^3)
+> par(mfrow=c(1,2),mar=c(2,2,0,0))
+> plot(sim$x,sim$m,ylim=c(-2,2),type="l")
+> lines(sim$x,sim$m,col="red")
+> for (i in 1:30){
++   sim$yR=sim$m+rnorm(nrow(sim),0,0.4)
++   lines(ksmooth(sim$x,sim$yR,kernel="normal",bandwidth = qnorm(0.75,0,0.07)/0.25))
++ }
+> plot(sim$x,sim$m,ylim=c(-2,2),type="l")
+> lines(sim$x,sim$m,col="red")
+> for (i in 1:30){
++   sim$yR=sim$m+rnorm(nrow(sim),0,0.4)
++   a=sm.regression(sim$x,sim$yR,h = 0.07,display='none')
++   lines(a$eval.points,a$estimate)
++ }
+> 
+\end{Sinput}
+\end{Schunk}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Design bias and boundary bias}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(2,1,1,0))
+> laymat=matrix(c(1:8),byrow=FALSE,nrow=2)
+> laymat=laymat[c(1,1,2),]
+> layout(laymat)
+> n=200
+> ungraf3=function(bw=1){
++   miny=min(y)-0.05*(max(y)-min(y))
++   maxy=max(y)+0.05*(max(y)-min(y))
++   plot(x,y,ylim=c(miny,maxy),yaxs="i",yaxt="n",xlab="",ylab="",col=gray(0.7))
++   rug(x,line=0.5)
++   sig=0.25*bw/qnorm(0.75)
++   a=ksmooth(x,y,bandwidth=bw)
++   lines(a$x,a$y,lwd=2,col="blue")
++   a=sm.regression(x,y,h = sig,display='none')
++   lines(a$eval.points,a$estimate,lwd=2)
++   #rect(min(x1),-0.1,max(x1),1,lwd=2,col=hsv(184/360,.57,.98,alpha=0.2),border=NA)
++   #lines(range(x1),-0.1*c(1,1),lwd=2,col="blue")
++   curve(ff(x),add=TRUE,lwd=1,n=100,col="red")
++   curve(miny+0.1*(maxy-miny)*dnorm(x,0.5,sig)/dnorm(0.5,0.5,sig),add=TRUE,lwd=2,col="lightblue")
++   hist(x,freq=FALSE,main="",yaxt="n",col=gray(0.7),border="white")
++ }
+> x=seq(0,1,length=n) #sort(runif(n,0,1))
+> ff=function(x) (x-0.5)^2
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf3(bw=0.4)
+> x=qnorm(seq(0,1,length=(n+2))[2:(n+1)]) #sort(rnorm(n,0,1))
+> x=(x-min(x))/(max(x)-min(x))
+> ff=function(x) (x-0.5)^2
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf3(bw=0.4)
+> x=seq(0,1,length=n) #sort(runif(n,0,1))
+> ff=function(x) 0.5+x
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf3(bw=0.5)
+> x=qnorm(seq(0,1,length=(n+2))[2:(n+1)]) #sort(rnorm(n,0,1))
+> x=(x-min(x))/(max(x)-min(x))
+> ff=function(x) 0.5+x
+> m=ff(x)
+> y=m+rnorm(n,0,0.025)
+> ungraf3(bw=0.5)
+> 
+\end{Sinput}
+\end{Schunk}
+\end{frame}
+
+
+
+
+\begin{Schunk}
+\begin{Sinput}
+> lidar$range=(lidar$range-mean(lidar$range))/sd(lidar$range)
+\end{Sinput}
+\end{Schunk}
+
+\begin{frame}[fragile]{LIDAR: modello polinomiale}
+Assumiamo che $f()$ sia (approssimabile da) un polinomio
+\[ f(x;\vbeta) = \beta_0 + \beta_1 x + \beta_2 x^2 + \ldots + \beta_{p} x^p \]
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{Schunk}
+\begin{Sinput}
+> par(mar=c(5,4,0.2,0.2))
+> x=lidar$range
+> y=lidar$logratio
+> fit4=lm(y~x+I(x^2)+I(x^3)+I(x^4))
+> plot(lidar$range,lidar$logratio,pch=20,xlab="range (standardized)",ylab="logratio")
+> lines(x,predict(fit4),col="red",pch=20,lwd=3)
+> fit8=lm(y~x+I(x^2)+I(x^3)+I(x^4)+I(x^5)+I(x^6)+I(x^7)+I(x^8))
+> lines(x,predict(fit8),col="darkgreen",pch=20,lwd=3)
+> legend(-1.6,-0.6,legend=c("p=4","p=8"),lwd=2,col=c("red","darkgreen"))
+\end{Sinput}
+\end{Schunk}
+\column{0.5\textwidth}
+Il ruolo di $k$ \`e svolto da $p$, al crescere di $p$
+\begin{itemize}
+\item aumenta la varianza
+\item diminuisce la distorsione
+\end{itemize}
+Problema: elevata correlazione dei $\hat\beta_j$
+\begin{scriptsize}

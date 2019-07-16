@@ -28,14 +28,14 @@ ggplot(data = lidar,
        aes(x = range, y = logratio)) +
   geom_point() +
   geom_smooth(method = "loess", se = F, span = .7,
-              method.args = list(degree = 2), color = "red") +
+              method.args = list(degree = 2), color = "red", size = 1) +
   geom_smooth(method = "loess", se = F, span = .3,
-              method.args = list(degree = 1), color = "blue") +
+              method.args = list(degree = 1), color = "blue", size = 1) +
   geom_smooth(method = "loess", se = F, span = .3,
-              method.args = list(degree = 0), color = "green") +
+              method.args = list(degree = 0), color = "darkgreen", size = 1) +
   geom_line(data = data_legend,
-            aes(x = x, y = y, color = degree)) +
-  scale_color_manual(values = c("green", "blue", "red")) +
+            aes(x = x, y = y, color = degree), size = 1) +
+  scale_color_manual(values = c("darkgreen", "blue", "red")) +
   labs(title = "Lidar dataset",
        subtitle = "Local Polynomial Regression")
 

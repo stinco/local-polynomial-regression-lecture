@@ -11,6 +11,7 @@ library(splines)
 library(MASS)
 library(tidyverse)
 library(gridExtra)
+library(sm)
 
 # Set plot themes
 theme_set(theme_bw())
@@ -32,7 +33,7 @@ ungraf2 = function(x, y, ff, bw=1,
   
   curve(ff(x), add = TRUE, lwd = 2, n = 100, col = "black") # True regression
   a = ksmooth(x, y, bandwidth = bw)
-  lines(a$x, a$y, lwd = 2, col = "green") # Nadaraya–Watson
+  lines(a$x, a$y, lwd = 2, col = "darkgreen") # Nadaraya–Watson
   # rect(min(x1),-0.1,max(x1),1,lwd=2,col=hsv(184/360,.57,.98,alpha=0.2),border=NA)
   # lines(range(x1),-0.1*c(1,1),lwd=2,col="blue")
   # sig=0.25*bw/qnorm(0.75)
@@ -123,7 +124,7 @@ ungraf3 = function(x, y, ff, bw=1,
   
   # The quartile are at +-0.25*bw
   a = ksmooth(x, y, bandwidth = bw)
-  lines(a$x, a$y, lwd = 2, col = "green") # Nadaraya–Watson
+  lines(a$x, a$y, lwd = 2, col = "darkgreen") # Nadaraya–Watson
   
   sig = 0.25 * bw / qnorm(0.75) # Standard deviation of the normal kernel
   a = sm.regression(x, y, h = sig, display = 'none')

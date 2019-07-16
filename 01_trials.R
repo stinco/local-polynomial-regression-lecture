@@ -19,9 +19,9 @@ lidar <- read.table("data/lidar.dat",header=TRUE)
 lidar <- lidar[sort.list(lidar$range),]
 bpd <- read.table("data/bpd.dat",header=TRUE)
 
-View(cmb)
-View(lidar)
-View(bpd)
+# View(cmb)
+# View(lidar)
+# View(bpd)
 
 
 # Plot lidar ####

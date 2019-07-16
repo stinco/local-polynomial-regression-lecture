@@ -24,7 +24,10 @@ View(lidar)
 View(bpd)
 
 
-plot(lidar$range,lidar$logratio,pch=20,xlab="range (standardized)",ylab="logratio")
+# Plot lidar ####
+
+plot(lidar$range, lidar$logratio,
+     pch=20, xlab = "range (standardized)", ylab = "logratio")
 
 ggplot(data = lidar,
        aes(x = range, y = logratio)) +

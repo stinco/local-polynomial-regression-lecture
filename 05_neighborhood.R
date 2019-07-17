@@ -77,7 +77,7 @@ ggplot(data = lidar,
 
 
 
-# What neighborhood mean ####
+# What neighborhood means ####
 
 set.seed(42)
 
@@ -118,7 +118,7 @@ lines(c(x0-h, x0+h), ylim[c(1,1)],
       lwd = 2, col = "blue")
 
 
-# Design bias
+# Design bias ####
 
 set.seed(42)
 

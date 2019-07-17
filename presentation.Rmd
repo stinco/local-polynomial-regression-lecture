@@ -84,7 +84,7 @@ $$
 
 \small If we had enought point with $x=x_0$
 
-```{r local, fig.height=5, fig.width = 5}
+```{r local, fig.height = 5, fig.width = 5}
 par(mar = c(2,1,1,1))
 
 n = 20
@@ -132,7 +132,7 @@ points(x0, mean(y), col = "red", pch = 20, cex = 2.5)
 <!-- \uncover<2->{ -->
 \small We can consider points "close" to $x_0$
 
-```{r neighborhood, fig.height=5, fig.width = 5}
+```{r neighborhood, fig.height = 5, fig.width = 5}
 
 par(mar = c(2,1,1,1))
 

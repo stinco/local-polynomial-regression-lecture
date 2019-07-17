@@ -1,0 +1,591 @@
+\documentclass[pdf]{beamer}
+
+%\usepackage[italian]{babel} %La data compare in italiano e la divisione in sillabe diventa quella italiana
+\usepackage[utf8]{inputenc} %Permette di scrivere le lettere accentate
+\usepackage[T1]{fontenc}
+\usepackage{hyperref} %Permette di inserire i collegamenti ipertestuali
+\usepackage{url}			        %Permette di inserire i link urle
+\usepackage{amsmath,amssymb}
+\usepackage{multirow} % Per usare il multirow nei tabular
+
+\usepackage{graphicx} %Serve per inserire le immagini
+\usepackage{xcolor}
+%\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
+
+%Disegni LaTeX
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+%\usetikzlibrary{shapes,snakes}
+\usetikzlibrary{trees}
+\usepackage{pgfplots,siunitx}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{units}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Nuovi comandi
+\newcommand{\magnitude}[1]{\left\lVert #1 \right\rVert}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usetheme{Pittsburgh}
+%\mode<presentation>{\usetheme{Boadilla}}
+%singapore
+%\useoutertheme[right]{sidebar}
+\usecolortheme{seahorse}
+%\usecolortheme{dolphin}
+\usefonttheme{professionalfonts}
+\setbeamercovered{dynamic}
+%\theoremstyle{definition}
+%\newtheorem{definizione}{Definizione}
+%\theoremstyle{plain}
+%\newtheorem{teorema}{Teorema}
+
+\definecolor{amber(sae/ece)}{rgb}{1.0, 0.49, 0.0}
+\definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
+\definecolor{myblue}{RGB}{0,82,155}
+
+\title{Local Polynomial Regression}
+\subtitle{Statistical Machine Learning - Individual project}
+\author{Leonardo Stincone}
+
+\date{18th July 2019}
+\institute[units]{Università degli Studi di Trieste}
+
+\logo{
+% \includegraphics[height=10mm]{logo-units_0.png}
+\includegraphics[width=10mm, height=10mm]{logo-units_0.png}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+%% title frame
+\begin{frame}
+\titlepage
+\end{frame}
+
+<<setup, include = F, echo = F>>=
+knitr::opts_chunk$set(echo = FALSE, fig.align = 'center')
+@
+
+<<libraries, include = F>>=
+# Libraries ####
+library(xtable)
+library(mgcv)
+library(splines)
+library(MASS)
+library(tidyverse)
+library(gridExtra)
+library(sm)
+library(SemiPar)   # For lidar dataset
+
+# Set plot themes
+theme_set(theme_bw())
+
+set.seed(42)
+@
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}
+% \frametitle{Table of contents}
+% \tableofcontents
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Problem statement: Lidar dataset}
+
+<<readData, cache = T>>=
+data(lidar)
+lidar <- lidar[sort.list(lidar$range), ]
+@
+
+\begin{columns}
+\column{0.42\textwidth}
+<<lidarPlot, fig.width = 4, fig.height = 4, cache = T>>=
+ggplot(data = lidar,
+       aes(x = range, y = logratio)) +
+  geom_point() +
+  labs(title = "Lidar dataset")
+@
+\column{0.58\textwidth}
+\small LIDAR = LIght Detection And Ranging
+\begin{itemize}
+\item it is a surveying method that measures distance to a target by illuminating the target with laser light and measuring the reflected light with a sensor
+\item $x$: distance travelled before the light is reflected back to its source
+\item $y$: logarithm of the ratio of received light from two laser sources
+\end{itemize}
+\end{columns}
+
+% \bigskip
+\vfill
+
+\uncover<2->{
+The objective is to estimate:
+$$
+f(x) = E \left[ Y \mid X=x \right]
+$$
+}
+
+\end{frame}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{What does local means?}
+\begin{columns}
+\column{0.52\textwidth}
+\only<1->{
+\small If we had enought point with $x=x_0$
+<<local, fig.height = 4, fig.width = 4, cache = T>>=
+par(mar = c(2,1,1,1))
+
+n = 20
+h = .1
+
+# x = sort(runif(n, 0, 1))
+
+x0 = 0.5
+x = rep(x0, n)
+ff = function(x){sqrt(3*x + .5)}
+m = ff(x)
+y = m + rnorm(n,0,0.1)
+
+xlim = c(0,1)
+# ylim = c(min(y) - .05 * (max(y) - min(y)),
+         # max(y) + .05 * (max(y) - min(y)))
+ylim = c(.5, 2.1)
+
+plot(x, y, xlim = xlim, ylim = ylim, yaxt = "n", xaxt = "n",
+     xlab = "", ylab = "", yaxs = "i",
+     col = "blue", pch = 20)
+
+# axis(1, at = c(x0-h, x0+h), labels = c("", ""))
+axis(1, at = x0, labels = expression(x[0]))
+
+# rect(x0 - h, ylim[1], x0 + h, ylim[2],
+#      lwd=2, col = hsv(184/360, .57, .98, alpha = 0.2), border=NA)
+
+
+curve(ff(x), add = TRUE, lwd = 1,
+      xlim = c(-.1, 1.1))
+
+# ind <- abs(x-x0) < h
+# points(x[ind], y[ind], col = "blue", pch = 20)
+
+segments(x0, -1, x0, mean(y), lwd = .5, lty = 2)
+points(x0, mean(y), col = "red", pch = 20, cex = 2.5)
+
+# lines(c(x0-h, x0+h), ylim[c(1,1)],
+#       lwd = 2, col = "blue")
+@
+}
+\column{0.52\textwidth}
+\only<2->{
+\small We can consider points "close" to $x_0$
+<<neighborhood, fig.height = 4, fig.width = 4, cache = T>>=
+par(mar = c(2,1,1,1))
+
+n = 100
+h = .1
+
+x = sort(runif(n, 0, 1))
+x0 = 0.5
+ff = function(x){sqrt(3*x + .5)}
+m = ff(x)
+y = m + rnorm(n,0,0.1)
+
+xlim = c(0,1)
+# ylim = c(min(y) - .05 * (max(y) - min(y)),
+#          max(y) + .05 * (max(y) - min(y)))
+ylim = c(.5, 2.1)
+
+plot(x, y, xlim = xlim, ylim = ylim, yaxt = "n", xaxt = "n",
+     xlab = "", ylab = "", yaxs = "i")
+
+axis(1, at = c(x0-h, x0+h), labels = c("", ""))
+axis(1, at = x0, labels = expression(x[0]))
+
+rect(x0 - h, ylim[1], x0 + h, ylim[2],
+     lwd=2, col = hsv(184/360, .57, .98, alpha = 0.2), border=NA)
+
+
+curve(ff(x), add = TRUE, lwd = 1,
+      xlim = c(-.1, 1.1))
+
+ind <- abs(x-x0) < h
+points(x[ind], y[ind], col = "blue", pch = 20)
+
+segments(x0, -1, x0, mean(y[ind]), lwd = .5, lty = 2)
+points(x0, mean(y[ind]), col = "red", pch = 20, cex = 2.5)
+
+lines(c(x0-h, x0+h), ylim[c(1,1)],
+      lwd = 2, col = "blue")
+@
+}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{2 basic ideas}
+\begin{columns}
+\column[t]{0.52\textwidth}
+\begin{block}{$k$ nearest neighbors}
+$$ \hat{f}(x) = \frac{1}{k} \sum_{i=1}^n y_i I_{N_k(x)}(x_i) $$
+
+\end{block}
+\column[t]{0.52\textwidth}
+\begin{block}{Neighborhood of radius $h$}
+$$\hat{f}(x) = \frac{\sum_{i=1}^n y_i I_{[0,h]}(|x-x_i|)}{\sum_{i=1}^n I_{[0,h]}(|x-x_i|)}$$
+
+\end{block}
+\end{columns}
+
+
+\begin{columns}
+\column[t]{0.52\textwidth}
+<<lidarKnn, fig.height = 4, fig.width = 6, cache = T>>=
+knn=function(x,xx,yy,k){
+  mean(yy[abs(xx-x)<=(sort(abs(xx-x))[k])])
+}
+knn2=function(x,xx,yy,k){  
+  mapply(knn,x,MoreArgs=list(xx=xx,yy=yy,k=k))
+}
+
+data_legend <- tibble(x = rep(mean(lidar$range), 4),
+                      y = rep(mean(lidar$logratio),4),
+                      k = factor(str_c("k = ", c(6,6,30,30)),
+                                 levels = str_c("k = ", c(6,30))))
+
+ggplot(data = lidar,
+       aes(x = range, y = logratio)) +
+  geom_point() +
+  stat_function(fun = function(x){knn2(x,lidar$range,lidar$logratio,k=6)},
+                size = 1, col = "red") +
+  stat_function(fun = function(x){knn2(x,lidar$range,lidar$logratio,k=30)},
+                size = 1, col = "darkgreen") +
+  geom_line(data = data_legend,
+            aes(x = x, y = y, color = k), size = 1) +
+  scale_color_manual(values = c("red", "darkgreen")) +
+  labs(title = "Lidar dataset",
+       subtitle = "k nearest neighbors")
+@
+\column[t]{0.52\textwidth}
+<<lidarRadiusH, fig.height = 4, fig.width = 6, cache = T>>=
+runmean=function(x,xx,yy,h){
+  mean(yy[abs(xx-x)<=h])
+}
+runmean2=function(x,xx,yy,h){  
+  mapply(runmean,x,MoreArgs=list(xx=xx,yy=yy,h=h))
+}
+
+data_legend <- tibble(x = rep(mean(lidar$range), 4),
+                      y = rep(mean(lidar$logratio),4),
+                      h = factor(str_c("h = ", c(4,4,20,20)),
+                                 levels = str_c("h = ", c(4,20))))
+
+ggplot(data = lidar,
+       aes(x = range, y = logratio)) +
+  geom_point() +
+  stat_function(fun = function(x){runmean2(x,lidar$range,lidar$logratio,h=4)},
+                size = 1, col = "red") +
+  stat_function(fun = function(x){runmean2(x,lidar$range,lidar$logratio,h=20)},
+                size = 1, col = "darkgreen") +
+  geom_line(data = data_legend,
+            aes(x = x, y = y, color = h), size = 1) +
+  scale_color_manual(values = c("red", "darkgreen")) +
+  labs(title = "Lidar dataset",
+       subtitle = "Neighborhood of radius h")
+@
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Nadaraya-Watson kernel regression}
+
+$$
+\hat{f}(x) = \sum_{i=1}^n \ell_i(x) y_i
+$$
+
+with:
+$$
+\ell_i(x) = \frac{K\left(\frac{x-x_i}{h}\right)}{\sum_{j=1}^n K\left(\frac{x-x_j}{h}\right)}
+$$
+
+where $K(\cdot)$ is a kernel function that satisfies:
+\begin{itemize}
+\item $ K(x)\geq 0$
+\item $ \int K(x)dx=1$
+\item $ \int xK(x)dx=0$
+\item $ \int x^2K(x)dx>0$
+\end{itemize}
+
+
+% $$
+% I_{[0,h]}(|x-x_i|) = I_{[-1,1]}\left(\frac{x-x_i}{h}\right)
+% $$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Some proposed kernels}
+
+<<plotKernel>>=
+ylim = c(0, 1.2)
+
+plot_kernel = function(ff){
+  plot(0, 0, type = "n",
+       xlim = c(-2,2), ylim = ylim)
+  segments(-3, 0, 3, 0, lwd = 1, lty = 2)
+  curve(ff(x), add = T, lwd = 3, col = "red")
+}
+@
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cccc}
+Uniform &
+\multirow{4}{*}{
+% \includegraphics[width=0.10\textwidth]{logo-units_0.png}
+\includegraphics[width=0.18\textwidth]{figure/uniform-1}
+}%
+& 
+Triangle &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/triangle-1}
+}%
+\\
+$\frac{1}{2}I_{[-1,1]}(u)$ & &  $(1-|u|)I_{[-1,1]}(u)$ & \\ & & & \\ & & & \\
+Triweight &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/triweight-1}
+}%
+& 
+Quartic &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/quartic-1}
+}%
+\\
+ $\frac{35}{32}(1-u^2)^3I_{[-1,1]}(u)$ & &   $\frac{15}{16}(1-u^2)^2I_{[-1,1]}(u)$ & \\ & & & \\ & & & \\
+Cosine &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/cosine-1}
+}%
+& 
+Epanechnikov &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/epanechnikov-1}
+}%
+\\
+$\frac{\pi}{4}\cos\left(\frac{\pi}{2}u\right)I_{[-1,1]}(u)$ & &    $\frac{3}{4}(1-u^2)I_{[-1,1]}(u)$  & \\ & & & \\ & & & \\
+Gaussian &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/gaussian-1}
+}%
+& 
+ &
+\multirow{4}{*}{}%
+\\
+$\frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ & &      & \\ & & & \\ & & & \\
+
+\end{tabular}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Design bias, boundary bias and concavity bias}
+
+<<nw_bias, fig.height = 4, fig.width = 8>>=
+par(mar = c(2, .5, 1, .5))
+laymat = matrix(c(1:8), byrow = FALSE, nrow = 2)
+laymat = laymat[c(1, 1, 2), ]
+layout(laymat)
+
+ungraf2 = function(x, y, ff, bw=1,
+                   miny = min(y)-0.05*(max(y)-min(y)),
+                   maxy = max(y)+0.05*(max(y)-min(y))){
+  plot(x, y, ylim = c(miny, maxy), yaxs = "i", yaxt = "n",
+       xlab = "", ylab = "", col = gray(0.7))
+  rug(x, line = 0.5)
+  
+  curve(ff(x), add = TRUE, lwd = 2, n = 100, col = "black") # True regression
+  a = ksmooth(x, y, bandwidth = bw)
+  lines(a$x, a$y, lwd = 2, col = "darkgreen") # Nadaraya–Watson
+  # rect(min(x1),-0.1,max(x1),1,lwd=2,col=hsv(184/360,.57,.98,alpha=0.2),border=NA)
+  # lines(range(x1),-0.1*c(1,1),lwd=2,col="blue")
+  # sig=0.25*bw/qnorm(0.75)
+  # curve(miny+0.1*(maxy-miny)*dnorm(x,0.5,sig)/dnorm(0.5,0.5,sig),add=TRUE,lwd=2,col="lightblue")
+  # hist(x,freq=FALSE,main="",yaxt="n",col=gray(0.7),border="white")
+}
+
+# set.seed(42)
+n = 200
+
+# Computing linear
+
+x1_unif = seq(0, 1, length = n) #sort(runif(n,0,1))
+ff1 = function(x){0.5 + x}
+m = ff1(x1_unif)
+y1_unif = m + rnorm(n, 0, 0.025)
+
+x = qnorm(seq(0, 1, length = (n + 2))[2:(n + 1)]) #sort(rnorm(n,0,1))
+min = min(x)
+max = max(x)
+x1_norm = (x - min(x)) / (max(x) - min(x))
+# ff1 = function(x){0.5 + x}
+m = ff1(x1_norm)
+y1_norm = m + rnorm(n, 0, 0.025)
+
+
+
+# Plotting linear
+
+miny1 = min(y1_unif, y1_norm) - 0.05*(max(y1_unif, y1_norm) - min(y1_unif, y1_norm))
+maxy1 = max(y1_unif, y1_norm) + 0.05*(max(y1_unif, y1_norm) - min(y1_unif, y1_norm))
+
+ungraf2(x = x1_unif, y = y1_unif, ff = ff1, bw = 0.5,
+        miny = miny1, maxy = maxy1)
+curve(dunif(x),
+      yaxt = "n")
+
+ungraf2(x = x1_norm, y = y1_norm, ff = ff1, bw = 0.5,
+        miny = miny1, maxy = maxy1)
+curve(dnorm(x, mean = .5, sd = 1/(max - min)),
+      yaxt = "n")
+
+
+
+# Computing quadratic
+
+x2_unif = seq(0, 1, length = n) #sort(runif(n,0,1))
+ff2 = function(x){(x - 0.5)^2}
+m = ff2(x2_unif)
+y2_unif = m + rnorm(n,0,0.025)
+
+x2_norm = qnorm(seq(0, 1, length = (n + 2))[2:(n + 1)]) #sort(rnorm(n,0,1))
+min = min(x)
+max = max(x)
+x2_norm = (x - min(x)) / (max(x) - min(x))
+# ff2 = function(x){(x - 0.5)^2}
+m = ff2(x2_norm)
+y2_norm = m + rnorm(n, 0, 0.025)
+
+
+# Plotting quadratic
+
+miny2 = min(y2_unif, y2_norm) - 0.05*(max(y2_unif, y2_norm) - min(y2_unif, y2_norm))
+maxy2 = max(y2_unif, y2_norm) + 0.05*(max(y2_unif, y2_norm) - min(y2_unif, y2_norm))
+
+ungraf2(x = x2_unif, y = y2_unif, ff = ff2, bw = 0.4,
+        miny = miny2, maxy = maxy2)
+curve(dunif(x),
+      yaxt = "n")
+
+ungraf2(x = x2_norm, y = y2_norm, ff = ff2, bw = 0.4,
+        miny = miny2, maxy = maxy2)
+curve(dnorm(x, mean = .5, sd = 1/(max - min)),
+      yaxt = "n")
+
+@
+
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Design bias: what's happening?}
+
+<<designBias, out.width='\\textwidth', fig.width = 6, fig.height = 5>>=
+n = 50
+h = .1
+
+# x = sort(runif(n, 0, 1))
+mean = .6
+sd = .04
+x = sort(rnorm(n, mean, sd))
+x0 = 0.5
+ff = function(x){sqrt(3*x + .5)}
+m = ff(x)
+y = m + rnorm(n,0,0.025)
+
+xlim = c(0,1)
+# ylim = c(min(y) - .05 * (max(y) - min(y)),
+#          max(y) + .05 * (max(y) - min(y)))
+ylim = c(.6, 2)
+
+plot(x, y, xlim = xlim, ylim = ylim, yaxt = "n", xaxt = "n",
+     xlab = "", ylab = "", yaxs = "i")
+
+axis(1, at = c(x0-h, x0+h), labels = c("", ""))
+axis(1, at = x0, labels = expression(x[0]))
+
+rect(x0 - h, ylim[1], x0 + h, ylim[2],
+     lwd=2, col = hsv(184/360, .57, .98, alpha = 0.2), border=NA)
+
+curve(ff(x), add = TRUE, lwd = 1,
+      xlim = c(-.1, 1.1))
+
+ind <- abs(x-x0) < h
+points(x[ind], y[ind], col = "blue", pch = 20)
+
+segments(x0, -1, x0, mean(y[ind]), lwd = .5, lty = 2)
+points(x0, mean(y[ind]), col = "red", pch = 20, cex = 3)
+
+
+curve(ylim[1] + 0.2 * (ylim[2] - ylim[1]) * dnorm(x, mean, sd) / dnorm(0,0,sd),
+      add = TRUE, lwd = 2, col = "lightblue")
+
+lines(c(x0-h, x0+h), ylim[c(1,1)],
+      lwd = 2, col = "blue")
+@
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Local polynomial regression}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{titolo del frame}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{titolo del frame}
+
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

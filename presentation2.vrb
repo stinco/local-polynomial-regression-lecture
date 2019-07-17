@@ -1,0 +1,10 @@
+\frametitle{titolo del frame}
+
+\begin{figure}[!hbtp]
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-1-1}
+
+\end{knitrout}
+\end{figure}

@@ -130,7 +130,11 @@ plot_kernel(dnorm)
 @
 
 
-
+  <<tricube, fig.height = 2.5, fig.width = 2.5>>=
+  ff = function(x){70/81*(1-abs(x)^3)^3 * (x>=-1 & x<=1)}
+par(mar = c(2,2,1,1))
+plot_kernel(ff)
+@
 
 
 

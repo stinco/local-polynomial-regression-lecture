@@ -113,6 +113,11 @@ curve(dnorm(x, mean = .5, sd = 1/(max - min)),
 
 # LOESS ####
 
+par(mar = c(2, .5, 1, .5))
+laymat = matrix(c(1:8), byrow = FALSE, nrow = 2)
+laymat = laymat[c(1, 1, 2), ]
+layout(laymat)
+
 ungraf3 = function(x, y, ff, bw=1,
                    miny = min(y)-0.05*(max(y)-min(y)),
                    maxy = max(y)+0.05*(max(y)-min(y))){

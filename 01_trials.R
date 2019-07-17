@@ -268,7 +268,8 @@ p1 <- data_grid %>%
              size = 2) +
   geom_line(color = "brown") +
   geom_point(color = "red") +
-  geom_abline(aes(intercept = a0, slope = a1))
+  geom_abline(aes(intercept = a0, slope = a1)) +
+  labs(x = "", y = "")
   
 
 p1 +

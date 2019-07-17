@@ -98,15 +98,14 @@
 \definecolor{myblue}{RGB}{0,82,155}
 
 \title{Local Polynomial Regression}
-\subtitle{Statistical Machine Learning - Individual project}
+\subtitle{Statistical Machine Learning - individual project}
 \author{Leonardo Stincone}
 
 \date{18th July 2019}
 \institute[units]{Università degli Studi di Trieste}
 
 \logo{
-% \includegraphics[height=10mm]{logo-units_0.png}
-\includegraphics[width=10mm, height=10mm]{logo-units_0.png}
+\includegraphics[width=10mm, height=10mm]{img/logo-units_0.png}
 }
 
 
@@ -177,9 +176,10 @@ $$
 \begin{frame}
 \frametitle{What does local means?}
 \begin{columns}
-\column{0.52\textwidth}
+\column[t]{0.52\textwidth}
 \only<1->{
-\small If we had enought point with $x=x_0$
+\small If we had enough point with $x=x_0$
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 
@@ -191,9 +191,10 @@ $$
 
 \end{knitrout}
 }
-\column{0.52\textwidth}
+\column[t]{0.52\textwidth}
 \only<2->{
 \small We can consider points "close" to $x_0$
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 
@@ -289,7 +290,6 @@ where $K(\cdot)$ is a kernel function that satisfies:
 \begin{tabular}{cccc}
 Uniform &
 \multirow{4}{*}{
-% \includegraphics[width=0.10\textwidth]{logo-units_0.png}
 \includegraphics[width=0.18\textwidth]{figure/uniform-1}
 }%
 & 
@@ -326,13 +326,16 @@ Gaussian &
 \includegraphics[width=0.18\textwidth]{figure/gaussian-1}
 }%
 & 
- &
-\multirow{4}{*}{}%
+Tricube &
+\multirow{4}{*}{
+\includegraphics[width=0.18\textwidth]{figure/tricube-1}
+}%
 \\
-$\frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ & &      & \\ & & & \\ & & & \\
+$\frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ & & $\frac{70}{81}(1-|u|^3)^3I_{[-1,1]}(u)$ & \\ & & & \\ & & & \\
 
 \end{tabular}
 }
+
 
 \end{frame}
 
@@ -376,34 +379,200 @@ $\frac{1}{\sqrt{2\pi}} e^{-u^2/2}$ & &      & \\ & & & \\ & & & \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Local polynomial regression}
+\frametitle{Local polynomial regression: idea}
+
+Locally the Nadaraya-Watson estimator is a Weighted Least Square Estimator:
+$$
+\hat{f}_{NW}(x_0) = \underset{a}{\mbox{argmin}} \sum_{i=1}^n K\left(\frac{x_i-x_0}{h}\right)(y_i - a)^2
+$$
+
+\hfill
+
+\uncover<2->{
+Idea: instead of approximating $f(x_0)$ with a constant value $a$, we could approximate it with a polynomial $p_{x_0}(u, \boldsymbol{a})$.
+
+\hfill
+
+Taylor polynomial approximation:
+$$
+p_{x_0}(u, \boldsymbol{a}) = a_0 + a_1(u-x) + \frac{a_2}{2!}(u-x)^2 +\ldots + \frac{a_d}{d!}(u-x)^d
+$$
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Local polynomial regression: estimation}
+
+We can estimate the coefficients of $p_{x_0}(u;\boldsymbol{a})$ as:
+$$
+\hat{\boldsymbol{a}}(x_0) = \underset{\boldsymbol{a}}{\mbox{argmin}}
+\sum_{i=1}^n K\left(\frac{x_i-x}{h}\right)\left(y_i - p_{x_0}(x_i;{\boldsymbol{a}})\right)^2
+$$
+
+Thus, we can define the estimator for $f(x)$ in $x_0$ just computing $p_{x_0}(u;\hat{\boldsymbol{a}})$ in $x_0$:
+
+$$
+\hat{f}(x_0) = p_{x_0}(x_0; \hat{\boldsymbol{a}})
+$$
+
+Then we can repeat the process for each value of $x$ in a grid and obtain $\hat{f}(x)$.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Local polynomial regression: example}
+
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/LoessExplanation_1-1} 
+
+}
+
+
+
+\end{knitrout}
+
 
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{titolo del frame}
+\frametitle{Local polynomial regression: example}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/LoessExplanation_2-1} 
+
+}
 
 
+
+\end{knitrout}
 \end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{titolo del frame}
+\frametitle{Local polynomial regression: example}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 
+{\centering \includegraphics[width=\maxwidth]{figure/LoessExplanation_3-1} 
+
+}
+
+
+
+\end{knitrout}
 
 \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Local polynomial regression: example}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/LoessExplanation_4-1} 
+
+}
 
 
 
+\end{knitrout}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Design bias, boundary bias and concavity bias}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/loess_bias-1} 
+
+}
 
 
 
+\end{knitrout}
+\end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Local Polynomial Regression on LIDAR dataset}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/lidarLoess-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Local polynomial regression: example}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/LoessComparison-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Bibliography}
+
+\begin{columns}
+\column[t]{0.5\textwidth}
+\small
+\textbf{Fan, Gijbels} \\
+\textit{Local Polynomial Modelling and its Applications} \\
+Springer (1996)
+\column[t]{0.5\textwidth}
+\small
+\textbf{Ruppert, Wand, Carroll} \\
+\textit{Semiparametric Regression} \\
+Cambridge University Press (2003)
+\end{columns}
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{img/cover_localPolynomialModellingAndItsApplication.png}
+\end{center}
+\column{0.5\textwidth}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{img/cover_semiparametriRegression.png}
+\end{center}
+\end{columns}
+
+\end{frame}
 
 
 \end{document}

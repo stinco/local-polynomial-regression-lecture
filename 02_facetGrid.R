@@ -137,7 +137,7 @@ data_fit1_grid_small %>%
   stat_function(fun = truefun, size = 1) +
   geom_point(data = data_fit1_cross_small,
              aes(x = x, y = y,
-                 color = dnorm(x, mean = grid, sd = span) / dnorm(0, mean = 0, sd = span))) +
+                 color = dnorm(x, mean = grid, sd = span1) / dnorm(0, mean = 0, sd = span1))) +
   geom_line(data = data_fit1_grid2,
             aes(x = x, y = y),
             col = "brown", size = 1) +
@@ -147,7 +147,8 @@ data_fit1_grid_small %>%
   facet_grid(~grid) +
   theme(legend.position = "none") +
   scale_color_gradient(low = "gray90", high = "black") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2))
+  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2)) +
+  labs(x = "", y = "")
 
 
 p_loess_linear <- data_grid_small %>% 
@@ -523,7 +524,7 @@ data_fit1_grid_small %>%
   # stat_function(fun = truefun, size = 1) +
   geom_point(data = data_fit1_cross_small,
              aes(x = x, y = y,
-                 color = dnorm(x, mean = grid, sd = span) / dnorm(0, mean = 0, sd = span))) +
+                 color = dnorm(x, mean = grid, sd = span1) / dnorm(0, mean = 0, sd = span1))) +
   # geom_line(data = data_fit1_grid2,
   #           aes(x = x, y = y),
   #           col = "brown", size = 1) +
@@ -533,14 +534,15 @@ data_fit1_grid_small %>%
   facet_grid(~grid) +
   theme(legend.position = "none") +
   scale_color_gradient(low = "gray90", high = "black") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2))
+  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2)) +
+  labs(x = "", y = "")
 
 data_fit1_grid_small %>% 
   ggplot(aes(x = grid, y = stima)) +
   # stat_function(fun = truefun, size = 1) +
   geom_point(data = data_fit1_cross_small,
              aes(x = x, y = y,
-                 color = dnorm(x, mean = grid, sd = span) / dnorm(0, mean = 0, sd = span))) +
+                 color = dnorm(x, mean = grid, sd = span1) / dnorm(0, mean = 0, sd = span1))) +
   geom_line(data = data_fit1_grid2,
             aes(x = x, y = y),
             col = "brown", size = 1) +
@@ -550,14 +552,15 @@ data_fit1_grid_small %>%
   facet_grid(~grid) +
   theme(legend.position = "none") +
   scale_color_gradient(low = "gray90", high = "black") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2))
+  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2)) +
+  labs(x = "", y = "")
 
 data_fit1_grid_small %>% 
   ggplot(aes(x = grid, y = stima)) +
   stat_function(fun = truefun, size = 1) +
   geom_point(data = data_fit1_cross_small,
              aes(x = x, y = y,
-                 color = dnorm(x, mean = grid, sd = span) / dnorm(0, mean = 0, sd = span))) +
+                 color = dnorm(x, mean = grid, sd = span1) / dnorm(0, mean = 0, sd = span1))) +
   geom_line(data = data_fit1_grid2,
             aes(x = x, y = y),
             col = "brown", size = 1) +
@@ -567,14 +570,15 @@ data_fit1_grid_small %>%
   facet_grid(~grid) +
   theme(legend.position = "none") +
   scale_color_gradient(low = "gray90", high = "black") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2))
+  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2)) +
+  labs(x = "", y = "")
 
 data_fit1_grid_small %>% 
   ggplot(aes(x = grid, y = stima)) +
   stat_function(fun = truefun, size = 1) +
   geom_point(data = data_fit1_cross_small,
              aes(x = x, y = y,
-                 color = dnorm(x, mean = grid, sd = span) / dnorm(0, mean = 0, sd = span))) +
+                 color = dnorm(x, mean = grid, sd = span1) / dnorm(0, mean = 0, sd = span1))) +
   geom_line(data = data_fit1_grid2,
             aes(x = x, y = y),
             col = "brown", size = 1) +
@@ -584,7 +588,8 @@ data_fit1_grid_small %>%
   facet_grid(~grid) +
   theme(legend.position = "none") +
   scale_color_gradient(low = "gray90", high = "black") +
-  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2))
+  coord_cartesian(xlim = c(0, 1), ylim = c(-0.3, 1.2)) +
+  labs(x = "", y = "")
 
 
 

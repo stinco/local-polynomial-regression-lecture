@@ -132,7 +132,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Problem statement: Lidar dataset}
+\frametitle{Problem statement: LIDAR dataset}
 
 
 
@@ -395,7 +395,7 @@ Idea: instead of approximating $f(x_0)$ with a constant value $a$, we could appr
 
 Taylor polynomial approximation:
 $$
-p_{x_0}(u, \boldsymbol{a}) = a_0 + a_1(u-x) + \frac{a_2}{2!}(u-x)^2 +\ldots + \frac{a_d}{d!}(u-x)^d
+p_{x_0}(u; \boldsymbol{a}) = a_0 + a_1(u-x_0) + \frac{a_2}{2!}(u-x_0)^2 +\ldots + \frac{a_d}{d!}(u-x_0)^d
 $$
 }
 
@@ -408,7 +408,7 @@ $$
 We can estimate the coefficients of $p_{x_0}(u;\boldsymbol{a})$ as:
 $$
 \hat{\boldsymbol{a}}(x_0) = \underset{\boldsymbol{a}}{\mbox{argmin}}
-\sum_{i=1}^n K\left(\frac{x_i-x}{h}\right)\left(y_i - p_{x_0}(x_i;{\boldsymbol{a}})\right)^2
+\sum_{i=1}^n K\left(\frac{x_i-x_0}{h}\right)\left(y_i - p_{x_0}(x_i;{\boldsymbol{a}})\right)^2
 $$
 
 Thus, we can define the estimator for $f(x)$ in $x_0$ just computing $p_{x_0}(u;\hat{\boldsymbol{a}})$ in $x_0$:
@@ -528,7 +528,7 @@ Then we can repeat the process for each value of $x$ in a grid and obtain $\hat{
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Local polynomial regression: example}
+\frametitle{Local polynomial regression: linear vs quadratic}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}

@@ -36,5 +36,9 @@ vignettes/*.pdf
 rsconnect/
 
 # Cache figures
-bayesianStatistics_project_files/
+figure/
 .Rproj.user
+
+# Trials and scripts from other projects
+trials/
+slidesFromStatisticaProgredito/

@@ -1,14 +1,14 @@
 \documentclass[pdf]{beamer}
 
-%\usepackage[italian]{babel} %La data compare in italiano e la divisione in sillabe diventa quella italiana
-\usepackage[utf8]{inputenc} %Permette di scrivere le lettere accentate
+%\usepackage[italian]{babel}  % Date appears in italian and the syllables division changes to italian standard
+\usepackage[utf8]{inputenc}   % It enables accented characters
 \usepackage[T1]{fontenc}
-\usepackage{hyperref} %Permette di inserire i collegamenti ipertestuali
-\usepackage{url}			        %Permette di inserire i link urle
+\usepackage{hyperref}         % It enables hypertext links
+\usepackage{url}			        % It enables url links
 \usepackage{amsmath,amssymb}
-\usepackage{multirow} % Per usare il multirow nei tabular
+\usepackage{multirow}         % It enables multirow in tabular
 
-\usepackage{graphicx} %Serve per inserire le immagini
+\usepackage{graphicx}         % It enables images
 \usepackage{xcolor}
 %\usepackage{subfigure}
 \usepackage{caption}
